@@ -4,18 +4,24 @@ public class Parser
 	private int pos; //where am I in the theStmt string
 	private static final String legalVariableCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "; 
 	private static final String legalOpCharacters = "+-*/% ";
+	private VarDefStatement SyntaxTree;
 	
 	
+	public VarDefStatement getSyntaxTree() 
+	{
+		return SyntaxTree;
+	}
+
 	public Parser(String theStmt)
 	{
 		this.theStmt = theStmt;
-		
+		this.SyntaxTree = null;
 		this.pos = 0;
 	}
 	
 	void parse()
 	{
-		this.parse_stmt();
+		this.SyntaxTree = this.parse_stmt();
 	}
 	
 	private String getNextToken(char c)
@@ -53,13 +59,13 @@ public class Parser
 		return token.trim();
 	}
 	
-	private void parse_stmt()
+	private VarDefStatement parse_stmt()
 	{
 		//Print each time it reads something like:
 		// Read: VarName = a
 		String varName = this.getNextToken(Parser.legalVariableCharacters);
 		System.out.println("Read VarName: " + varName);
-		VarExpression FirstVarExp = new VarExpression(varName);
+		VarExpression varExp = new VarExpression(varName);
 		
 		
 		//burn past the =
@@ -75,9 +81,8 @@ public class Parser
 		this.getNextToken(';');
 		System.out.println("Burned ;");
 		
-		//Build VarDefStatement here!!!!
-		VarDefStatement FirstVarDefStmt = new VarDefStatement(FirstVarExp, mathExpr);	
-		System.out.println(FirstVarDefStmt);
+		//return VarDefStatement here!!!!
+		return new VarDefStatement(varExp, mathExpr);
 	}
 	
 	private MathExpression parse_math_expr()
@@ -91,7 +96,7 @@ public class Parser
 			//we know that we are at the beginning of a paren-math-expr
 			this.getNextToken('(');
 			System.out.println("Burned (");
-			this.parse_math_expr();
+			leftOperand = this.parse_math_expr();
 			this.getNextToken(')');
 			System.out.println("Burned )");
 		}
@@ -109,7 +114,7 @@ public class Parser
 			//we know that we are at the beginning of a paren-math-expr
 			this.getNextToken('(');
 			System.out.println("Burned (");
-			this.parse_math_expr();
+			rightOperand = this.parse_math_expr();
 			this.getNextToken(')');
 			System.out.println("Burned )");
 		}

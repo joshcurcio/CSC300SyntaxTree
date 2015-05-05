@@ -12,4 +12,20 @@ public class MathExpression extends Expression
 		this.theOp = theOp;
 	}
 
+	public String toString()
+	{
+		if(leftOperand instanceof MathExpression && rightOperand instanceof MathExpression)
+		{
+			return "(" + leftOperand.toString() + ")" + theOp.toString() + "(" + rightOperand.toString() + ")";
+		}
+		if(leftOperand instanceof MathExpression)
+		{
+			return "(" + leftOperand.toString() + ")" + theOp.toString() + rightOperand.toString();
+		}
+		if(rightOperand instanceof MathExpression)
+		{
+			return leftOperand.toString() + theOp.toString() + "(" + rightOperand.toString() + ")";
+		}
+		return leftOperand.toString() + theOp.toString()+ rightOperand.toString();
+	}
 }
